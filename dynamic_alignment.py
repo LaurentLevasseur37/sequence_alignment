@@ -1,20 +1,20 @@
 import sys
 
 def getClosestMatch(seq1, seqArr, nameArr):
-    maxDistance = 0
+    minDistance = 0
     alignArr  = []
     descriptionArr = []
     for i in range(0, len(seqArr)):
         #return two matrices: the dynamic programming matrix and the backtracking matrix
         temp = getDistance(seq1, seqArr[i])
-        if (temp[0][len(seq1)][len(seqArr[i])] > maxDistance):
-            #new max distance and answer array
-            maxDistance = temp[0][len(seq1)][len(seqArr[i])]
+        if (temp[0][len(seq1)][len(seqArr[i])] < minDistance):
+            #new min distance and answer array
+            minDistance = temp[0][len(seq1)][len(seqArr[i])]
             descriptionArr = []
             descriptionArr.append(nameArr[i])
             alignArr = []
             alignArr.append(getAlignment(temp[1], seq1, seqArr[i]))
-        elif (temp[0][len(seq1)][len(seqArr[i])] == maxDistance):
+        elif (temp[0][len(seq1)][len(seqArr[i])] == minDistance):
             descriptionArr.append(nameArr[i])
             alignArr.append(getAlignment(temp[1], seq1, seqArr[i]))
     file = open("out.fna", 'w')
@@ -33,9 +33,9 @@ def getDistance(a, b):
     for i in range (1,x + 1):
         for j in range (1, y + 1):
             if (a[i - 1] == b[j - 1]):
-                diag = matrix[i - 1][j - 1] + 2
-                left = matrix[i - 1][j] - 2
-                up = matrix[i][j - 1] - 2
+                diag = matrix[i - 1][j - 1]
+                left = matrix[i - 1][j] + 2
+                up = matrix[i][j - 1] + 2
                 matrix[i][j] = max(diag, left, up)
                 if (matrix[i][j] == diag):
                     back_matrix[i][j] = "↖"
@@ -44,9 +44,9 @@ def getDistance(a, b):
                 elif (matrix[i][j] == up):
                     back_matrix[i][j] = "↑"
             else:
-                diag = matrix[i - 1][j - 1] - 1
-                left = matrix[i - 1][j] - 2
-                up = matrix[i][j - 1] - 2
+                diag = matrix[i - 1][j - 1] + 1
+                left = matrix[i - 1][j] + 2
+                up = matrix[i][j - 1] + 2
                 matrix[i][j] = max(diag, left, up)
                 if (matrix[i][j] == diag):
                     back_matrix[i][j] = "↖"
